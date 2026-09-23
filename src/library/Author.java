@@ -42,4 +42,5 @@ public class Author {
         return Objects.equals(firstName, author.firstName)
                 && Objects.equals(lastName, author.lastName);
     }
+
 }
