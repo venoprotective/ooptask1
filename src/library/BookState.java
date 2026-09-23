@@ -1,7 +1,7 @@
 package library;
 
 public enum BookState {
-    NOW,
+    NEW,
     OLD,
     LIKENEW
 }
