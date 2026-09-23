@@ -13,7 +13,7 @@ public class StorageAddress {
             throw new IllegalArgumentException("не суещствует шкаф или не существует комната или и шкаф и комната");
         }
 
-        return shelf.getCabinet().getRoom();    
+        return shelf.getCabinet().getRoom();
     }
 
     public Cabinet getCabinet() {
