@@ -6,4 +6,8 @@ public class Shelf {
     public Shelf(String name) {
         this.name = name;
     }
+
+    public String getName() {
+        return name;
+    }
 }

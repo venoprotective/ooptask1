@@ -11,4 +11,8 @@ public class Room {
         this.name = name;
         this.cabinets = new ArrayList<Cabinet>();
     }
+
+    public String getName() {
+        return name;
+    }
 }

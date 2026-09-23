@@ -11,4 +11,8 @@ public class Cabinet {
         this.name = name;
         this.shelves = new ArrayList<Shelf>();
     }
+
+    public String getName() {
+        return name;
+    }
 }
