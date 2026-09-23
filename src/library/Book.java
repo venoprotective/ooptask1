@@ -40,5 +40,13 @@ public class Book {
     public String toString() {
         return title + " - " + author + " [" + isbn + "]";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book book)) return false;
+
+        return Objects.equals(isbn, book.isbn);
+    }
 }
 
