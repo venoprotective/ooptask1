@@ -110,4 +110,28 @@ public class LibraryCatalog {
         }
         throw new BookNotIssuedException(inventoryNumber);
     }
+
+    public List<Loan> getIssuedLoans() {
+        List<Loan> result = new ArrayList<>();
+
+        for (Loan loan : loanHistory) {
+            if (loan.isActive()) {
+                result.add(loan);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Loan> getOverdueLoans(LocalDate date) {
+        List<Loan> result = new ArrayList<>();
+
+        for (Loan loan : loanHistory) {
+            if (loan.isOverdue(date)) {
+                result.add(loan);
+            }
+        }
+
+        return result;
+    }
 }
