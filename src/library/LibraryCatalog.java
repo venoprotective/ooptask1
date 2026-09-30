@@ -1,5 +1,6 @@
 package library;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ public class LibraryCatalog {
 
     private final Map<String, Book> books = new HashMap<>();
     private final Map<String, PhysicalBook> copies = new HashMap<>();
+    private final List<Loan> loanHistory = new ArrayList<>();
 
     public void addBook(Book book) {
         books.put(book.getIsbn(), book);
@@ -86,5 +88,18 @@ public class LibraryCatalog {
         }
 
         return copy.getStorageAddress();
+    }
+    public void issueBook(String inventoryNumber, String reader, LocalDate issueDate, LocalDate dueDate){
+        PhysicalBook copy = copies.get(inventoryNumber);
+
+        if (copy == null){
+            throw new IllegalArgumentException("Экземпляр не найден");
+        }
+
+        for (Loan loan : loanHistory){
+            if (loan.getCopy().equals(copy) && loan.isActive()){
+                throw new BookAlreadyIssuedException(inventoryNumber);
+            }
+        }
     }
 }
