@@ -1,10 +1,7 @@
 package library;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LibraryCatalog {
 
@@ -89,17 +86,28 @@ public class LibraryCatalog {
 
         return copy.getStorageAddress();
     }
-    public void issueBook(String inventoryNumber, String reader, LocalDate issueDate, LocalDate dueDate){
+
+    public void issueBook(String inventoryNumber, String reader, LocalDate issueDate, LocalDate dueDate) {
         PhysicalBook copy = copies.get(inventoryNumber);
 
-        if (copy == null){
+        if (copy == null) {
             throw new IllegalArgumentException("Экземпляр не найден");
         }
 
-        for (Loan loan : loanHistory){
-            if (loan.getCopy().equals(copy) && loan.isActive()){
+        for (Loan loan : loanHistory) {
+            if (loan.getCopy().equals(copy) && loan.isActive()) {
                 throw new BookAlreadyIssuedException(inventoryNumber);
             }
         }
+    }
+
+    public void returnBook(String inventoryNumber, LocalDate returnDate) {
+        for (Loan loan : loanHistory) {
+            if (loan.getCopy().getInventoryNumber().equals(inventoryNumber) && loan.isActive()) {
+                loan.close(returnDate);
+                return;
+            }
+        }
+        throw new BookNotIssuedException(inventoryNumber);
     }
 }
