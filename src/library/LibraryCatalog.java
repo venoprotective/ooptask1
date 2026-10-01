@@ -38,11 +38,7 @@ public class LibraryCatalog {
         List<Book> result = new ArrayList<>();
 
         for (Book book : books.values()) {
-            if (book.getAuthor()
-                    .getFullName()
-                    .toLowerCase()
-                    .contains(author.toLowerCase())) {
-
+            if (book.getAuthor().getFullName().toLowerCase().contains(author.toLowerCase())) {
                 result.add(book);
             }
         }
@@ -54,10 +50,7 @@ public class LibraryCatalog {
         List<Book> result = new ArrayList<>();
 
         for (Book book : books.values()) {
-            if (book.getTitle()
-                    .toLowerCase()
-                    .contains(title.toLowerCase())) {
-
+            if (book.getTitle().toLowerCase().contains(title.toLowerCase())) {
                 result.add(book);
             }
         }
@@ -129,6 +122,65 @@ public class LibraryCatalog {
         for (Loan loan : loanHistory) {
             if (loan.isOverdue(date)) {
                 result.add(loan);
+            }
+        }
+
+        return result;
+    }
+
+    public void moveShelf(Shelf shelf, Cabinet newCabinet) {
+        newCabinet.addShelf(shelf);
+    }
+
+    public void moveCabinet(Cabinet cabinet, Room newRoom) {
+        newRoom.addCabinet(cabinet);
+    }
+
+    public List<Loan> getHistoryByBook(String isbn) {
+        List<Loan> result = new ArrayList<>();
+
+        for (Loan loan : loanHistory) {
+            if (loan.getCopy().getBook().getIsbn().equals(isbn)) {
+                result.add(loan);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Loan> getHistoryByReader(String reader) {
+        List<Loan> result = new ArrayList<>();
+
+        for (Loan loan : loanHistory) {
+            if (loan.getReader().equalsIgnoreCase(reader)) {
+                result.add(loan);
+            }
+        }
+
+        return result;
+    }
+
+    public Map<Genre, Integer> getGenreDistribution() {
+        Map<Genre, Integer> result = new HashMap<>();
+
+        for (PhysicalBook copy : copies.values()) {
+            Genre genre = copy.getBook().getGenre();
+
+            result.put(genre, result.getOrDefault(genre, 0) + 1);
+        }
+
+        return result;
+    }
+
+    public Map<String, Integer> getShelfOccupancy(List<Room> rooms) {
+        Map<String, Integer> result = new HashMap<>();
+
+        for (Room room : rooms) {
+            for (Cabinet cabinet : room.getCabinets()) {
+                for (Shelf shelf : cabinet.getShelves()) {
+                    String address = room.getName() + " -> " + cabinet.getName() + " -> " + shelf.getName();
+                    result.put(address, shelf.getBookCopies().size());
+                }
             }
         }
 
