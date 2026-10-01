@@ -80,7 +80,11 @@ public class LibraryCatalog {
         return copy.getStorageAddress();
     }
 
-    public void issueBook(String inventoryNumber, String reader, LocalDate issueDate, LocalDate dueDate) {
+    public void issueBook(String inventoryNumber,
+                          String reader,
+                          LocalDate issueDate,
+                          LocalDate dueDate) {
+
         PhysicalBook copy = copies.get(inventoryNumber);
 
         if (copy == null) {
@@ -92,6 +96,15 @@ public class LibraryCatalog {
                 throw new BookAlreadyIssuedException(inventoryNumber);
             }
         }
+
+        Loan loan = new Loan(
+                copy,
+                reader,
+                issueDate,
+                dueDate
+        );
+
+        loanHistory.add(loan);
     }
 
     public void returnBook(String inventoryNumber, LocalDate returnDate) {
