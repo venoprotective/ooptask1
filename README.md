@@ -1,4 +1,4 @@
-# Library Catalog
+# Library Catalog | TASK 1 OOP
 
 Небольшой проект на Java для работы с библиотекой.
 
