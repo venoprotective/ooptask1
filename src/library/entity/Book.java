@@ -1,4 +1,6 @@
-package library;
+package library.entity;
+
+import library.enums.Genre;
 
 import java.util.Objects;
 

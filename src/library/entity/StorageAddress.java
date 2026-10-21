@@ -1,4 +1,4 @@
-package library;
+package library.entity;
 
 public class StorageAddress {
     private final Shelf shelf;

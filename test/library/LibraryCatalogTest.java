@@ -1,5 +1,10 @@
 package library;
 
+import library.entity.*;
+import library.enums.BookState;
+import library.enums.Genre;
+import library.exception.BookAlreadyIssuedException;
+import library.exception.BookNotIssuedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +23,9 @@ class LibraryCatalogTest {
     private Cabinet cabinet;
     private Shelf shelf;
 
+    // Подготовка тестовых данных:
+    // создаётся каталог, иерархия хранения Room -> Cabinet -> Shelf,
+    // книга, её физический экземпляр, и экземпляр добавляется в каталог на полку.
     @BeforeEach
     void setUp() {
         catalog = new LibraryCatalog();
@@ -47,6 +55,8 @@ class LibraryCatalogTest {
         catalog.addCopy(copy, shelf);
     }
 
+    // Проверяет, что каталог находит книгу по ISBN и возвращает именно ту книгу,
+    // которая была добавлена в тестовых данных.
     @Test
     void findBookByIsbn() {
         Book result = catalog.findByIsbn("123");
@@ -54,6 +64,8 @@ class LibraryCatalogTest {
         assertEquals(book, result);
     }
 
+    // Проверяет, что каталог находит физический экземпляр по его инвентарному номеру
+    // и возвращает именно этот экземпляр.
     @Test
     void findCopy() {
         PhysicalBook result = catalog.findCopy("001");
@@ -61,6 +73,8 @@ class LibraryCatalogTest {
         assertEquals(copy, result);
     }
 
+    // Проверяет поиск книг по части названия: книга "Effective Java"
+    // должна находиться по строке "Effective".
     @Test
     void findBookByTitle() {
         List<Book> result = catalog.findByTitle("Effective");
@@ -68,6 +82,7 @@ class LibraryCatalogTest {
         assertTrue(result.contains(book));
     }
 
+    // Проверяет поиск книг по автору: книга должна находиться по фамилии "Bloch".
     @Test
     void findBookByAuthor() {
         List<Book> result = catalog.findByAuthor("Bloch");
@@ -75,6 +90,8 @@ class LibraryCatalogTest {
         assertTrue(result.contains(book));
     }
 
+    // Проверяет поиск книг по жанру: книга жанра SCIENCE
+    // должна присутствовать в результате поиска по этому жанру.
     @Test
     void findBookByGenre() {
         List<Book> result = catalog.findByGenre(Genre.SCIENCE);
@@ -82,6 +99,8 @@ class LibraryCatalogTest {
         assertTrue(result.contains(book));
     }
 
+    // Проверяет, что для экземпляра можно получить адрес хранения,
+    // и что в адресе правильно указаны комната, шкаф и полка.
     @Test
     void getBookAddress() {
         StorageAddress address = catalog.getAddress("001");
@@ -91,6 +110,8 @@ class LibraryCatalogTest {
         assertEquals(shelf, address.getShelf());
     }
 
+    // Проверяет запрет добавления в каталог второго экземпляра
+    // с тем же инвентарным номером "001".
     @Test
     void cannotAddSameCopyTwice() {
         PhysicalBook secondCopy =
@@ -102,6 +123,8 @@ class LibraryCatalogTest {
         );
     }
 
+    // Проверяет выдачу книги читателю: после выдачи создаётся активная выдача,
+    // и в ней сохраняется имя читателя "Ivan".
     @Test
     void issueBook() {
         catalog.issueBook(
@@ -117,6 +140,8 @@ class LibraryCatalogTest {
         assertEquals("Ivan", loans.get(0).getReader());
     }
 
+    // Проверяет, что один и тот же экземпляр нельзя выдать повторно,
+    // пока он уже выдан: ожидается BookAlreadyIssuedException.
     @Test
     void cannotIssueBookTwice() {
         catalog.issueBook(
@@ -137,6 +162,8 @@ class LibraryCatalogTest {
         );
     }
 
+    // Проверяет возврат выданной книги: после возврата список активных выдач
+    // должен стать пустым.
     @Test
     void returnBook() {
         catalog.issueBook(
@@ -154,6 +181,8 @@ class LibraryCatalogTest {
         assertTrue(catalog.getIssuedLoans().isEmpty());
     }
 
+    // Проверяет, что нельзя вернуть экземпляр, который не был выдан:
+    // ожидается BookNotIssuedException.
     @Test
     void cannotReturnBookThatWasNotIssued() {
         assertThrows(
@@ -165,6 +194,8 @@ class LibraryCatalogTest {
         );
     }
 
+    // Проверяет поиск просроченных выдач: если срок возврата 2026-10-05,
+    // то на дату 2026-10-10 выдача должна считаться просроченной.
     @Test
     void findOverdueBook() {
         catalog.issueBook(
@@ -182,6 +213,8 @@ class LibraryCatalogTest {
         assertEquals(1, loans.size());
     }
 
+    // Проверяет историю выдач по читателю: после выдачи книги читателю "Ivan"
+    // в его истории должна быть одна запись.
     @Test
     void getReaderHistory() {
         catalog.issueBook(
@@ -197,6 +230,8 @@ class LibraryCatalogTest {
         assertEquals(1, history.size());
     }
 
+    // Проверяет историю выдач по книге: после выдачи экземпляра книги с ISBN "123"
+    // в истории по этой книге должна быть одна запись.
     @Test
     void getBookHistory() {
         catalog.issueBook(
@@ -212,6 +247,8 @@ class LibraryCatalogTest {
         assertEquals(1, history.size());
     }
 
+    // Проверяет перемещение полки в другой шкаф:
+    // после moveShelf полка должна ссылаться на новый шкаф "Cabinet 2".
     @Test
     void moveShelf() {
         Cabinet secondCabinet = new Cabinet("Cabinet 2");
@@ -221,6 +258,8 @@ class LibraryCatalogTest {
         assertEquals(secondCabinet, shelf.getCabinet());
     }
 
+    // Проверяет перемещение шкафа в другую комнату:
+    // после moveCabinet шкаф должен ссылаться на новую комнату "Room 2".
     @Test
     void moveCabinet() {
         Room secondRoom = new Room("Room 2");
@@ -230,6 +269,8 @@ class LibraryCatalogTest {
         assertEquals(secondRoom, cabinet.getRoom());
     }
 
+    // Проверяет распределение книг по жанрам:
+    // в каталоге одна книга жанра SCIENCE, значит для SCIENCE должно быть 1.
     @Test
     void genreDistribution() {
         Map<Genre, Integer> result =
@@ -238,6 +279,8 @@ class LibraryCatalogTest {
         assertEquals(1, result.get(Genre.SCIENCE));
     }
 
+    // Проверяет занятость полок для переданных комнат:
+    // на полке "Room 1 -> Cabinet 1 -> Shelf 1" должен быть 1 экземпляр.
     @Test
     void shelfOccupancy() {
         Map<String, Integer> result =
@@ -249,6 +292,9 @@ class LibraryCatalogTest {
         );
     }
 
+    // Дублирует проверку cannotIssueBookTwice:
+    // повторная выдача уже выданного экземпляра должна выбрасывать
+    // BookAlreadyIssuedException.
     @Test
     void cannotIssueAlreadyIssuedBook() {
         catalog.issueBook(
@@ -269,6 +315,8 @@ class LibraryCatalogTest {
         );
     }
 
+    // Дублирует проверку cannotReturnBookThatWasNotIssued:
+    // возврат невыданного экземпляра должен выбрасывать BookNotIssuedException.
     @Test
     void cannotReturnNotIssuedBook() {
         assertThrows(

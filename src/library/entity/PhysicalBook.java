@@ -1,4 +1,6 @@
-package library;
+package library.entity;
+
+import library.enums.BookState;
 
 import java.util.Objects;
 

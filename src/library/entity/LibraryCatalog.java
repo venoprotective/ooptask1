@@ -1,4 +1,8 @@
-package library;
+package library.entity;
+
+import library.enums.Genre;
+import library.exception.BookAlreadyIssuedException;
+import library.exception.BookNotIssuedException;
 
 import java.time.LocalDate;
 import java.util.*;
